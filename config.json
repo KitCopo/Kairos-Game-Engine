@@ -10,5 +10,38 @@
             "path": "C:/Users/Marcos/Desktop/Kairos Testes"
         }
     ],
-    "chat_local": []
+    "chat_local": [
+        {
+            "type": "Mensage",
+            "mensage": "Kairos Engine v0.0.1B Stable.Official (py) 2024 - ????, Marcos Ant\u00f4nio"
+        },
+        {
+            "type": "Kairos",
+            "mensage": "--- Pygame Server Started ---"
+        },
+        {
+            "type": "Mensage",
+            "mensage": "Kairos Engine v0.0.1B Stable.Official (py) 2024 - ????, Marcos Ant\u00f4nio"
+        },
+        {
+            "type": "Kairos",
+            "mensage": "--- Pygame Server Started ---"
+        },
+        {
+            "type": "Mensage",
+            "mensage": "Kairos Engine v0.0.1B Stable.Official (py) 2024 - ????, Marcos Ant\u00f4nio"
+        },
+        {
+            "type": "Kairos",
+            "mensage": "--- Pygame Server Started ---"
+        },
+        {
+            "type": "Mensage",
+            "mensage": "Kairos Engine v0.0.1B Stable.Official (py) 2024 - ????, Marcos Ant\u00f4nio"
+        },
+        {
+            "type": "Kairos",
+            "mensage": "--- Pygame Server Started ---"
+        }
+    ]
 }

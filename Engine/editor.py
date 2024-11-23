@@ -13,7 +13,7 @@ class Editor:
         self.project_name = project_data['name']
         self.project_path = project_data['path']
 
-        self.icon = pygame.image.load('./Assents/Engine.png')
+        self.icon = pygame.image.load('./Assents/icon.png')
         self.VERSION = f'v0.0.0 Beta (Editor) - {self.project_name}'
         self.WINDOW_SIZE = [1000, 600]
         self.WINDOW = pygame.display.set_mode(self.WINDOW_SIZE, pygame.RESIZABLE)

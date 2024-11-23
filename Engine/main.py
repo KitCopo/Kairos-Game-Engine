@@ -8,7 +8,7 @@ class ProjectManager:
         self.run = True
         self.config = ConFig()
         self.state = self.config.get_project_data()  # Dados dos projetos
-        self.icon = pygame.image.load('./Assents/Engine.png')  # Ícone do engine
+        self.icon = pygame.image.load('./Assents/icon.png')  # Ícone do engine
         self.VERSION = 'v0.0.0 Beta (Project Manager)'
         self.WINDOW_SIZE = [800, 500]
         self.WINDOW = pygame.display.set_mode(self.WINDOW_SIZE)

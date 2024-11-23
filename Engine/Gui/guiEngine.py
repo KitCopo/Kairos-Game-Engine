@@ -319,7 +319,7 @@ class List_OBJS:
         self.closeImg = pygame.image.load('./Assents/close.png')
         self.closeImg = pygame.transform.scale(self.closeImg, (9,9))
         self.lixeira = pygame.image.load('./Assents/trash.png')
-        self.cube = pygame.image.load('./Assents/bloquear.png')
+        self.cube = pygame.image.load('./Assents/BoxMesh.svg')
         self.cam = pygame.image.load('./Assents/videocam (1).png')
         self.cam = pygame.transform.scale(self.cam,(16,16))
         self.mash_icon_list = pygame.image.load('./Assents/rectangle.png')
