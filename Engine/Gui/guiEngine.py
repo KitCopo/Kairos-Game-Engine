@@ -320,6 +320,7 @@ class List_OBJS:
         self.closeImg = pygame.transform.scale(self.closeImg, (9,9))
         self.lixeira = pygame.image.load('./Assents/trash.png')
         self.cube = pygame.image.load('./Assents/BoxMesh.svg')
+        self.circle = pygame.image.load('./Assents/CircleShape2D.svg')
         self.cam = pygame.image.load('./Assents/videocam (1).png')
         self.cam = pygame.transform.scale(self.cam,(16,16))
         self.mash_icon_list = pygame.image.load('./Assents/rectangle.png')
@@ -459,7 +460,17 @@ class List_OBJS:
                 # Apenas renderizar objetos que estão dentro do intervalo visível
                 if y_position + self.cube.get_height() > self.Vec_Inspector[1] + 50 and y_position < self.Vec_Inspector[1] + visible_height:
                     obj_name = self.font.render(f'{obj_name_p}', True, (255, 255, 255))
-                    self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
+                    
+                    match obj_type:
+                        case 'Square': 
+                            self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
+                        case 'Circle':
+                            self.Window.blit(self.circle, (self.Vec_Inspector[0] + 20, y_position))
+                        case 'Triangle': 
+                            pass
+                        case _:
+                            print('Error obj_type not defined in configs')
+                        
                     self.Window.blit(obj_name, (self.Vec_Inspector[0] + 40, y_position + 2))
             
                     mouse_clicked = pygame.mouse.get_pressed()
@@ -552,7 +563,7 @@ class List_OBJS:
                     # add conteudo ao console 
                     
                     self.Mouse_pressed = True
-                if circle_add_button.collidepoint(mouse) and not self.Mouse_pressed and not self.create_main_sceen:
+                if circle_add_button.collidepoint(mouse) and not self.Mouse_pressed:
                     posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
                     posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
                     new_circle = { 
