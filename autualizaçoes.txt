@@ -1,0 +1,6 @@
+construir logica das scens logo depois de mostrar trasformes 
+depois logica do scens 
+depois mover objetos da sceen
+depois fundo da sceen mudar cores
+depois z-idex 
+depois barra de carregamento da engine 
