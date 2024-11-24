@@ -1,6 +1,6 @@
-construir logica das scens logo depois de mostrar trasformes 
-depois logica do scens 
-depois mover objetos da sceen
-depois fundo da sceen mudar cores
-depois z-idex 
-depois barra de carregamento da engine 
+acabar o transformer add comit e push  e ir fazer o add new objects em uma janela diferente 
+trabalhar na sceen logo em seguida
+resolver circle corte na cena 
+
+errors 
+error n: 01 : tipo de objeto nao existente

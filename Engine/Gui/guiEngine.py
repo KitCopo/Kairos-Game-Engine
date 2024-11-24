@@ -8,6 +8,7 @@ from Gui.forms_gui import *
 from Funcs import *
 from random import randint
 from Console.console import *
+from objects.objects import Types
 import configparser
 
 config_file_path = os.path.join(os.path.dirname(__file__), './Console/configs.ini')
@@ -35,9 +36,12 @@ class Data_OBJS:
         self.text_name = KairosFontRender('Name',self.KF,(255,255,255))
         self.text_surface = self.font.render('Properties', True, (255, 255, 255))
         self.transformer_text = self.font2.render('Transform',True,(255,255,255))
-        self.Position_text = self.font.render('Position',True,(200,200,200))
-        self.Rotation_text = self.font.render('Rotation',True,(200,200,200))
-        self.Scale_text = self.font.render('Scale',True,(200,200,200))
+        self.Position_text = self.font2.render('Position',True,(200,200,200))
+        self.Rotation_text = self.font2.render('Rotation',True,(200,200,200))
+        self.VectorX = self.font2.render('X',True,(200,200,200))
+        self.VectorY = self.font2.render('Y',True,(200,200,200))
+        self.Ray = self.font2.render('Ray',True,(200,200,200))
+        self.Scale_text = self.font2.render('Scale',True,(200,200,200))
         self.cube_img = pygame.image.load('Assents/3d.png')
         self.close_img = pygame.image.load('Assents/close (2).png')
         self.close_img = pygame.transform.scale(self.close_img,(8,8))
@@ -95,13 +99,29 @@ class Data_OBJS:
         else: 
             self.click = False
     
-    def render_transformer(self): 
+    def render_transformer(self,obj_type): 
         self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 100,self.state_1)
         self.Window.blit(self.transformer_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 100 - self.transformer_text.get_height() / 2 - 1))
-        
+    
         if self.state_1:
-            pass
-        
+            self.Window.blit(self.Position_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            
+            self.Window.blit(self.Rotation_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            
+            self.Window.blit(self.Scale_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+            
+            if obj_type in Types and obj_type != Types[1]: 
+                self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+            elif obj_type == Types[1]:
+                self.Window.blit(self.Ray,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+            elif obj_type not in Types: 
+                print('Error (num: 01)')
+                
     def render_propieties(self, obj_type, obj_id):
         # Desenha a caixa de entrada
         pygame.draw.rect(self.Window, (10, 10, 10), (self.Vec_Inspector[0] + 5, self.Vec_Inspector[1] + 30, self.Size_Inspector[0] - 40, self.Size_Inspector[1]), border_radius=8)
@@ -118,7 +138,7 @@ class Data_OBJS:
         self.Window.blit(self.text_name, (self.Vec_img[0] + text_type.get_width() + 10, self.Vec_Inspector[1] + text_type.get_height() + 48))
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
-        self.render_transformer()
+        self.render_transformer(obj_type)
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -469,7 +489,7 @@ class List_OBJS:
                         case 'Triangle': 
                             pass
                         case _:
-                            print('Error obj_type not defined in configs')
+                            print('Error (num: 01)')
                         
                     self.Window.blit(obj_name, (self.Vec_Inspector[0] + 40, y_position + 2))
             
