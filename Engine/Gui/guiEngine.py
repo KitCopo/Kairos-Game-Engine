@@ -62,14 +62,19 @@ class Data_OBJS:
         self.Vec = [self.Window.get_width() - self.Size[0], 20]
         
         self.Vec_side_bar = [self.Vec[0],0]
-        self.Size_sid_bar = [self.Size[0],int(self.Size[1] * 0.035)]
+        self.Size_sid_bar = [self.Size[0],int(self.Size[1] * 0.025)]
         self.Vec_Inspector = [self.Vec[0],0]
-        self.Size_Inspector = [int(self.Size[0] * 0.4), int(self.Size[1] * 0.035)]
+        self.Size_Inspector = [int(self.Size[0] * 0.4), 25]
 
         self.Vec_text = [self.Vec_Inspector[0] + 30, self.Vec_Inspector[1] + 6]
         self.Vec_img = [self.Vec_Inspector[0] + 10, self.Vec_Inspector[1] + 4]
         self.Vec_close = [self.Window.get_width() - 20, 7]
-    
+        self.VecX_vector_transformer = [self.Vec[0] + self.transformer_text.get_width() + int(self.Size[0] * 0.25)]
+        self.VecY_vector_trasformer = [self.VecX_vector_transformer[0] + int(self.Size[0] * 0.25)]
+        #medidads dos input do transformer
+        self.VecX_input_transformer = [self.VecX_vector_transformer[0] + 15]
+        self.VecY_input_transformer = [self.VecY_vector_trasformer[0] + 15]
+        self.Size_input_transformer = [int(self.Size[0] * 0.25) - 20,20]
     
     def render_top_Data_objs(self):
         self.update_size_position()
@@ -105,20 +110,27 @@ class Data_OBJS:
     
         if self.state_1:
             self.Window.blit(self.Position_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
-            self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
-            self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
+            pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+            pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
             
             self.Window.blit(self.Rotation_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            
+            self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+            pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+
             self.Window.blit(self.Scale_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
             
             if obj_type in Types and obj_type != Types[1]: 
-                self.Window.blit(self.VectorX,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
-                self.Window.blit(self.VectorY,(self.Vec[0] + self.transformer_text.get_width() / 2 + 160,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+                pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)            
             elif obj_type == Types[1]:
-                self.Window.blit(self.Ray,(self.Vec[0] + self.transformer_text.get_width() / 2 + 80,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                self.Window.blit(self.Ray,(self.VecX_vector_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
+                pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0] + 15,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
             elif obj_type not in Types: 
                 print('Error (num: 01)')
                 
