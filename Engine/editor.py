@@ -3,6 +3,7 @@ from Config.config_engine import ConFig
 from Gui.gui import Settings
 from Gui.guiEngine import Data_OBJS, Assents_OBJS, List_OBJS, Top_bars
 from Console.console import *
+from objects.objects import VERSION_ENGINE
 
 class Editor:
     def __init__(self, project_data):
@@ -14,7 +15,7 @@ class Editor:
         self.project_path = project_data['path']
 
         self.icon = pygame.image.load('./Assents/icon.png')
-        self.VERSION = f'v0.0.0 Beta (Editor) - {self.project_name}'
+        self.VERSION = f'{VERSION_ENGINE} (Editor) - {self.project_name}'
         self.WINDOW_SIZE = [1000, 600]
         self.WINDOW = pygame.display.set_mode(self.WINDOW_SIZE, pygame.RESIZABLE)
         pygame.display.set_icon(self.icon)

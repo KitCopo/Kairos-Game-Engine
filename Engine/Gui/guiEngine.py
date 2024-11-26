@@ -572,6 +572,7 @@ class List_OBJS:
            
         if mouse_press[2] and list_gui_rect.collidepoint(mouse): 
             self.visibleSetOBJ = True
+            #render_new_obj
             
         if self.visibleSetOBJ:
             sair_rect = pygame.Rect(self.Size_SetOBJ[0] - self.closeImg.get_width(), self.Vec_SetOBJ[1] + 10, self.closeImg.get_width(), self.closeImg.get_height())

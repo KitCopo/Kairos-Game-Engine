@@ -5,3 +5,7 @@ Types = [
     'Circle',
     'Triangle'
 ]
+
+# Version atual da Enine 
+ 
+VERSION_ENGINE = 'v0.0.0 BETA'

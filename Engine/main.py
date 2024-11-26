@@ -1,6 +1,7 @@
 import pygame
 from Config.config_engine import ConFig
 from Gui.gui import Settings, SetNewObj
+from objects.objects import VERSION_ENGINE
 
 class ProjectManager:
     def __init__(self):
@@ -9,7 +10,7 @@ class ProjectManager:
         self.config = ConFig()
         self.state = self.config.get_project_data()  # Dados dos projetos
         self.icon = pygame.image.load('./Assents/icon.png')  # Ícone do engine
-        self.VERSION = 'v0.0.0 Beta (Project Manager)'
+        self.VERSION = f'{VERSION_ENGINE} (Project Manager)'
         self.WINDOW_SIZE = [800, 500]
         self.WINDOW = pygame.display.set_mode(self.WINDOW_SIZE)
         self.WINDOW_COLOR = (31, 31, 31)
