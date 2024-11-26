@@ -40,6 +40,7 @@ class Data_OBJS:
         self.Rotation_text = self.font2.render('Rotation',True,(200,200,200))
         self.VectorX = self.font2.render('X',True,(200,200,200))
         self.VectorY = self.font2.render('Y',True,(200,200,200))
+        self.Angle = self.font2.render('Angle',True,(200,200,200))
         self.Ray = self.font2.render('Ray',True,(200,200,200))
         self.Scale_text = self.font2.render('Scale',True,(200,200,200))
         self.cube_img = pygame.image.load('Assents/3d.png')
@@ -104,7 +105,7 @@ class Data_OBJS:
         else: 
             self.click = False
     
-    def render_transformer(self,obj_type,obj_size,obj_pos): 
+    def render_transformer(self,obj_type,obj_size,obj_pos,obj_angle): 
         self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 100,self.state_1)
         self.Window.blit(self.transformer_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 100 - self.transformer_text.get_height() / 2 - 1))
     
@@ -121,10 +122,10 @@ class Data_OBJS:
             self.Window.blit(text_obj_posY, (self.VecY_input_transformer[0] + text_obj_posX.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height() + text_obj_posY.get_height()/4))
 
             self.Window.blit(self.Rotation_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
-            pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
-            pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+            self.Window.blit(self.Angle,(self.VecX_vector_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
+            pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0] + 25,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+            text_angle = self.font2.render(f'{obj_angle}',True,(200,200,200))
+            self.Window.blit(text_angle,(self.VecX_input_transformer[0] + 25 + text_angle.get_width() / 2 , self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height() +  text_angle.get_height()/4))
 
             self.Window.blit(self.Scale_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
             
@@ -145,7 +146,7 @@ class Data_OBJS:
             elif obj_type not in Types: 
                 print('Error (num: 01)')
                 
-    def render_propieties(self, obj_type, obj_id,obj_size,obj_pos):
+    def render_propieties(self, obj_type, obj_id,obj_size,obj_pos,obj_angle):
         # Desenha a caixa de entrada
         pygame.draw.rect(self.Window, (10, 10, 10), (self.Vec_Inspector[0] + 5, self.Vec_Inspector[1] + 30, self.Size_Inspector[0] - 40, self.Size_Inspector[1]), border_radius=8)
         self.Window.blit(self.cube_img, (self.Vec_img[0], self.Vec_img[1] + 30))
@@ -161,7 +162,7 @@ class Data_OBJS:
         self.Window.blit(self.text_name, (self.Vec_img[0] + text_type.get_width() + 10, self.Vec_Inspector[1] + text_type.get_height() + 48))
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
-        self.render_transformer(obj_type,obj_size,obj_pos)
+        self.render_transformer(obj_type,obj_size,obj_pos,obj_angle)
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -384,7 +385,8 @@ class List_OBJS:
         self.obj_name_select = None
         self.obj_visible_select = None
         self.obj_size_select = None
-        self.obj_position_select = None 
+        self.obj_position_select = None
+        self.obj_angle_select = None
         self.rect_obj_select = 0
         self.clicked = False
         self.create_main_sceen = True
@@ -503,6 +505,7 @@ class List_OBJS:
                 obj_visible = obj.get('visible_in_sceen','Unknown')
                 obj_size = obj.get('size','Unknown')
                 obj_pos = obj.get('position','Unknown')
+                obj_angle = obj.get('angle','Unknown')
 
                 # Apenas renderizar objetos que estão dentro do intervalo visível
                 if y_position + self.cube.get_height() > self.Vec_Inspector[1] + 50 and y_position < self.Vec_Inspector[1] + visible_height:
@@ -530,6 +533,7 @@ class List_OBJS:
                         self.obj_visible_select = obj_visible
                         self.obj_size_select = obj_size
                         self.obj_position_select = obj_pos
+                        self.obj_angle_select = obj_angle
                         self.PPD_visible = True
 
                         if self.rect_obj_select != object_rect_select:
@@ -542,7 +546,7 @@ class List_OBJS:
     
     def PPD(self): 
         if self.PPD_visible:
-            self.DATA_OBJ.render_propieties(self.obj_type_select,self.obj_id_select,self.obj_size_select,self.obj_position_select)
+            self.DATA_OBJ.render_propieties(self.obj_type_select,self.obj_id_select,self.obj_size_select,self.obj_position_select,self.obj_angle_select)
             self.DATA_OBJ.render_input(self.obj_name_select,self.obj_id_select)
         else:
             self.DATA_OBJ.render_not_prop()
@@ -605,6 +609,7 @@ class List_OBJS:
                       'name': 'Square',
                       'visible_in_sceen': True,
                       'position':[posX,posY],
+                      'angle': 0,
                       'size': [50, 50],
                       'color': [255, 255, 255],
                       'indece': 0 
@@ -621,6 +626,7 @@ class List_OBJS:
                         'name': 'Circle',
                         'visible_in_sceen': True,
                         'position': [posX,posY],
+                        'angle': 0,
                         'size': [50],
                         'color': [255,255,255], 
                         'indece': 0
@@ -632,7 +638,8 @@ class List_OBJS:
                         'type': 'Triangle',
                         'name': 'Triangle',
                         'visible_in_sceen': True,
-                        'position': [500,250], 
+                        'position': [500,250],
+                        'angle': 0,
                         'size': [50,50],
                         'color': [255,255,255],
                         'indece': 0
