@@ -104,17 +104,22 @@ class Data_OBJS:
         else: 
             self.click = False
     
-    def render_transformer(self,obj_type): 
+    def render_transformer(self,obj_type,obj_size,obj_pos): 
         self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 100,self.state_1)
         self.Window.blit(self.transformer_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 100 - self.transformer_text.get_height() / 2 - 1))
     
         if self.state_1:
+
             self.Window.blit(self.Position_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
             self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
             self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
             pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
             pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
-            
+            text_obj_posX = self.font2.render(f'{obj_pos[0]}',True,(200,200,200))
+            text_obj_posY = self.font2.render(f'{obj_pos[1]}',True,(200,200,200))
+            self.Window.blit(text_obj_posX, (self.VecX_input_transformer[0] + text_obj_posX.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height() + text_obj_posX.get_height()/4))
+            self.Window.blit(text_obj_posY, (self.VecY_input_transformer[0] + text_obj_posX.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height() + text_obj_posY.get_height()/4))
+
             self.Window.blit(self.Rotation_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
             self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
             self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 135 - self.transformer_text.get_height() / 2 - 1 + self.Rotation_text.get_height()))
@@ -128,13 +133,19 @@ class Data_OBJS:
                 self.Window.blit(self.VectorY,(self.VecY_vector_trasformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
                 pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
                 pygame.draw.rect(self.Window,(10,10,10),(self.VecY_input_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)            
+                text_obj_sizeX = self.font2.render(f'{obj_size[0]}',True,(200,200,200))
+                text_obj_sizeY = self.font2.render(f'{obj_size[1]}',True,(200,200,200))
+                self.Window.blit(text_obj_sizeX, (self.VecX_input_transformer[0] + text_obj_sizeX.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height() + text_obj_sizeX.get_height()/4))
+                self.Window.blit(text_obj_sizeY, (self.VecY_input_transformer[0] + text_obj_sizeY.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height() + text_obj_sizeY.get_height()/4))
             elif obj_type == Types[1]:
                 self.Window.blit(self.Ray,(self.VecX_vector_transformer[0],self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height()))
                 pygame.draw.rect(self.Window,(10,10,10),(self.VecX_input_transformer[0] + 15,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height(),self.Size_input_transformer[0],self.Size_input_transformer[1]),border_radius=5)
+                text_obj_Ray = self.font2.render(f'{obj_size[0]}',True,(200,200,200))
+                self.Window.blit(text_obj_Ray, (self.VecX_input_transformer[0] + 15 + text_obj_Ray.get_width() / 2,self.Vec[1] + 160 - self.transformer_text.get_height() / 2 - 1 + self.Scale_text.get_height() + text_obj_Ray.get_height()/4))           
             elif obj_type not in Types: 
                 print('Error (num: 01)')
                 
-    def render_propieties(self, obj_type, obj_id):
+    def render_propieties(self, obj_type, obj_id,obj_size,obj_pos):
         # Desenha a caixa de entrada
         pygame.draw.rect(self.Window, (10, 10, 10), (self.Vec_Inspector[0] + 5, self.Vec_Inspector[1] + 30, self.Size_Inspector[0] - 40, self.Size_Inspector[1]), border_radius=8)
         self.Window.blit(self.cube_img, (self.Vec_img[0], self.Vec_img[1] + 30))
@@ -150,7 +161,7 @@ class Data_OBJS:
         self.Window.blit(self.text_name, (self.Vec_img[0] + text_type.get_width() + 10, self.Vec_Inspector[1] + text_type.get_height() + 48))
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
-        self.render_transformer(obj_type)
+        self.render_transformer(obj_type,obj_size,obj_pos)
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -372,6 +383,8 @@ class List_OBJS:
         self.obj_type_select = None
         self.obj_name_select = None
         self.obj_visible_select = None
+        self.obj_size_select = None
+        self.obj_position_select = None 
         self.rect_obj_select = 0
         self.clicked = False
         self.create_main_sceen = True
@@ -488,6 +501,8 @@ class List_OBJS:
                 obj_type = obj.get('type', 'Unknown')
                 obj_id = obj.get('indece', 'Unknown')
                 obj_visible = obj.get('visible_in_sceen','Unknown')
+                obj_size = obj.get('size','Unknown')
+                obj_pos = obj.get('position','Unknown')
 
                 # Apenas renderizar objetos que estão dentro do intervalo visível
                 if y_position + self.cube.get_height() > self.Vec_Inspector[1] + 50 and y_position < self.Vec_Inspector[1] + visible_height:
@@ -513,7 +528,10 @@ class List_OBJS:
                         self.obj_id_select = obj_id
                         self.obj_name_select = obj_name_p
                         self.obj_visible_select = obj_visible
+                        self.obj_size_select = obj_size
+                        self.obj_position_select = obj_pos
                         self.PPD_visible = True
+
                         if self.rect_obj_select != object_rect_select:
                             self.rect_obj_select = object_rect_select
                 
@@ -524,7 +542,7 @@ class List_OBJS:
     
     def PPD(self): 
         if self.PPD_visible:
-            self.DATA_OBJ.render_propieties(self.obj_type_select,self.obj_id_select)
+            self.DATA_OBJ.render_propieties(self.obj_type_select,self.obj_id_select,self.obj_size_select,self.obj_position_select)
             self.DATA_OBJ.render_input(self.obj_name_select,self.obj_id_select)
         else:
             self.DATA_OBJ.render_not_prop()

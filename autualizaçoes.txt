@@ -4,3 +4,4 @@ resolver circle corte na cena
 
 errors 
 error n: 01 : tipo de objeto nao existente
+529
