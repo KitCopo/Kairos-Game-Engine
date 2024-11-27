@@ -87,6 +87,6 @@ def compile_data_for_scene(window, obj_data, viewport_size,size_data):
         draw_visible_rect(window, obj_pos, obj_size, obj_color, viewport_size,size_data)
     elif obj_type == 'Circle' and obj_visible:
         draw_visible_circle(window, obj_pos, obj_size, obj_color, viewport_size,size_data)
-    elif obj_type == 'Triangle' and obj_visible:
+    elif obj_type == 'Polygon' and obj_visible:
         # Implementar o desenho do triângulo conforme necessário
         pass

@@ -9,6 +9,7 @@ from Funcs import *
 from random import randint
 from Console.console import *
 from objects.objects import Types
+from Gui.guiNewObj import *
 import configparser
 
 config_file_path = os.path.join(os.path.dirname(__file__), './Console/configs.ini')
@@ -345,6 +346,7 @@ class List_OBJS:
         self.Assents_gui = Assents_OBJS
         self.DATA_OBJ = DATA_OBJ
         self.Window = Window
+        self.Api_Gui = Context_new_obj(self.Window)
         self.Color = [34, 34, 34]
         self.Color_inspector = [80, 80, 80]
         self.Color_addOBJ = [50,50, 50]
@@ -363,8 +365,9 @@ class List_OBJS:
         self.closeImg = pygame.image.load('./Assents/close.png')
         self.closeImg = pygame.transform.scale(self.closeImg, (9,9))
         self.lixeira = pygame.image.load('./Assents/trash.png')
-        self.cube = pygame.image.load('./Assents/BoxMesh.svg')
+        self.cube = pygame.image.load('./Assents/CollisionShape2D.svg')
         self.circle = pygame.image.load('./Assents/CircleShape2D.svg')
+        self.polygon = pygame.image.load('./Assents/Polygon2D.svg')
         self.cam = pygame.image.load('./Assents/videocam (1).png')
         self.cam = pygame.transform.scale(self.cam,(16,16))
         self.mash_icon_list = pygame.image.load('./Assents/rectangle.png')
@@ -453,13 +456,15 @@ class List_OBJS:
            pass
 
     def renderSetNewOBJ(self):
-        pygame.draw.rect(self.Window, self.Color_addOBJ, (*self.Vec_SetOBJ, *self.Size_SetOBJ),border_radius=5)
-        self.Window.blit(self.closeImg, (self.Size_SetOBJ[0] - self.closeImg.get_width(),self.Vec_SetOBJ[1]+10))
+        # pygame.draw.rect(self.Window, self.Color_addOBJ, (*self.Vec_SetOBJ, *self.Size_SetOBJ),border_radius=5)
+        # self.Window.blit(self.closeImg, (self.Size_SetOBJ[0] - self.closeImg.get_width(),self.Vec_SetOBJ[1]+10))
         
-        self.Window.blit(self.text_surface_Square, (self.Vec_Square))
-        self.Window.blit(self.text_surface_Circle, (self.Vec_Circle))
-        self.Window.blit(self.text_surface_triangle, (self.Vec_triangulo))
-        self.Window.blit(self.text_surface_Camera, (self.VecCam))
+        # self.Window.blit(self.text_surface_Square, (self.Vec_Square))
+        # self.Window.blit(self.text_surface_Circle, (self.Vec_Circle))
+        # self.Window.blit(self.text_surface_triangle, (self.Vec_triangulo))
+        # self.Window.blit(self.text_surface_Camera, (self.VecCam))
+
+        self.Api_Gui.render(self.visibleSetOBJ)
 
     def renderDataObjs(self):
         self.update_size_positions()
@@ -516,8 +521,8 @@ class List_OBJS:
                             self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
                         case 'Circle':
                             self.Window.blit(self.circle, (self.Vec_Inspector[0] + 20, y_position))
-                        case 'Triangle': 
-                            pass
+                        case 'Polygon': 
+                            self.Window.blit(self.polygon, (self.Vec_Inspector[0] + 20, y_position))
                         case _:
                             print('Error (num: 01)')
                         
@@ -563,6 +568,17 @@ class List_OBJS:
         # Verifica se o mouse está pressionado
         if not mouse_press[0]:
            self.Mouse_pressed = False
+        
+        self.Api_Gui.Changes_Datas()
+        cancelar_rect = pygame.Rect(self.Api_Gui.Conteiner_Vector[0] + self.Api_Gui.Conteiner_Size[0] - self.Api_Gui.button_Size[0] - 25 ,self.Api_Gui.Conteiner_Vector[1] + self.Api_Gui.Conteiner_Size[1] - self.Api_Gui.button_Size[1] - 20,self.Api_Gui.button_Size[0],self.Api_Gui.button_Size[1])
+        
+        if mouse_press[0]:
+            if not self.click:
+                if cancelar_rect.collidepoint(mouse):
+                    self.visibleSetOBJ = False
+                self.click = True
+        else: 
+            self.click = False
 
         close_rect = pygame.Rect(self.Vec_imgADD[0], self.Vec_imgADD[1], self.addOBJ_img.get_width(), self.addOBJ_img.get_height())
         list_gui_rect = pygame.Rect(self.Vec[0],self.Vec[1],self.Size[0],self.Size[1])
@@ -572,15 +588,11 @@ class List_OBJS:
            
         if mouse_press[2] and list_gui_rect.collidepoint(mouse): 
             self.visibleSetOBJ = True
-            #render_new_obj
             
         if self.visibleSetOBJ:
             sair_rect = pygame.Rect(self.Size_SetOBJ[0] - self.closeImg.get_width(), self.Vec_SetOBJ[1] + 10, self.closeImg.get_width(), self.closeImg.get_height())
             if sair_rect.collidepoint(mouse) and mouse_press[0]:
                self.visibleSetOBJ = False
-            
-            if not area_rect.collidepoint(mouse) and not close_rect.collidepoint(mouse) and mouse_press[0]:
-                self.visibleSetOBJ = False
             
             # Adicionar objeto ao jogo e cena
             cube_text_rect = self.text_surface_Square.get_rect()
@@ -636,8 +648,8 @@ class List_OBJS:
                     self.Mouse_pressed = True
                 if triangle_add_button.collidepoint(mouse) and not self.Mouse_pressed and not self.create_main_sceen: 
                     new_triangle = { 
-                        'type': 'Triangle',
-                        'name': 'Triangle',
+                        'type': 'Polygon',
+                        'name': 'Polygon',
                         'visible_in_sceen': True,
                         'position': [500,250],
                         'angle': 0,

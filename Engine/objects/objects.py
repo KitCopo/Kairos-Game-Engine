@@ -3,7 +3,7 @@
 Types = [
     'Square',
     'Circle',
-    'Triangle'
+    'Polygon'
 ]
 
 # Version atual da Enine 
