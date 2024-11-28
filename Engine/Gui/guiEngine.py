@@ -9,7 +9,6 @@ from Funcs import *
 from random import randint
 from Console.console import *
 from objects.objects import Types
-from Gui.guiNewObj import *
 import configparser
 
 config_file_path = os.path.join(os.path.dirname(__file__), './Console/configs.ini')
@@ -336,7 +335,7 @@ class Assents_OBJS:
             self.renderTopItens()
 
 class List_OBJS:
-    def __init__(self, Window, Assents_OBJS,DATA_OBJ):
+    def __init__(self,Window, Assents_OBJS,DATA_OBJ):
         self.config = ConFig()
         config_path = self.config.get_project_path()
         config_name = self.config.get_project_name()
@@ -346,12 +345,13 @@ class List_OBJS:
         self.Assents_gui = Assents_OBJS
         self.DATA_OBJ = DATA_OBJ
         self.Window = Window
-        self.Api_Gui = Context_new_obj(self.Window)
+        # self.Api_Gui = Context_new_obj(self.Window)
         self.Color = [34, 34, 34]
         self.Color_inspector = [80, 80, 80]
         self.Color_addOBJ = [50,50, 50]
         self.console_api = Console(self.Window,self.DATA_OBJ)
         self.font = pygame.font.SysFont('Arial', 12)
+        self.font2 = pygame.font.SysFont('Arial',12,True)
         self.text_surface = self.font.render('Scene Graph', True, (255, 255, 255))
         self.text_surface_Square = self.font.render('Square', True, (255, 255, 255))
         self.text_surface_Circle = self.font.render('Circle', True, (255, 255, 255))
@@ -392,8 +392,23 @@ class List_OBJS:
         self.obj_angle_select = None
         self.rect_obj_select = 0
         self.clicked = False
+        self.click = False
         self.create_main_sceen = True
         self.clicked2 = False
+
+        self.Conteiner_Color = (40,40,40)
+        self.sceen = pygame.image.load('./Assents/Node2D.svg')
+        self.square = pygame.image.load('./Assents/CollisionShape2D.svg')
+        self.Circle = pygame.image.load('./Assents/CircleShape2D.svg')
+        self. Camera2D = pygame.image.load('./Assents/Camera2D.svg')
+        self.Polygon = pygame.image.load('./Assents/Polygon2D.svg')
+        self.icons = [self.sceen,self.Camera2D,self.Polygon,self.square,self.Circle]
+        self.Names = ['Sceen2D','Camera2D','Polygon2D','Square','Circle']
+
+        self.click2 = False
+        self.obj_select_rect = 0
+        self.obj_select_visible = False
+        self.obj_select = 'Nenhum'
         self.update_size_positions()
 
     def update_size_positions(self):
@@ -440,8 +455,51 @@ class List_OBJS:
         
         self.Vec_icon_mash = [self.Vec_Inspector[0] + 10,self.Vec_Inspector[1] + 4]
         self.Vec_close_2 = [self.Size[0] - 20,7]
-        #Vecs for list objs
-        # self.cube_list_vec = [10,self.Size_Inspector[1] + self.cube.get_height()]
+        
+        self.Conteiner_Size = [self.Window.get_width() / 4, self.Window.get_height() / 2 ]
+        self.Conteiner_Vector = [self.Window.get_width() / 2 - self.Conteiner_Size[0] / 2,50]
+        self.button_Size = [int(self.Conteiner_Size[0] * 0.25),int(self.Conteiner_Size[1] * 0.09)]
+        self.Size_font = (int(self.button_Size[0] * 0.15))
+        self.fontPersonalizado = pygame.font.SysFont('Arial',self.Size_font, (200,200,200))
+        self.criar = self.fontPersonalizado.render('Criar',True , (200,200,200))
+        self.cancelar = self.fontPersonalizado.render('Cancelar',True, (200,200,200))
+    
+    def Create_Conteiner(self) -> None:
+        self.update_size_positions()
+        pygame.draw.rect(self.Window,self.Conteiner_Color, (self.Conteiner_Vector[0],self.Conteiner_Vector[1],self.Conteiner_Size[0],self.Conteiner_Size[1]))
+    
+    def Create_Buttons(self) -> None:
+        self.update_size_positions() 
+        pygame.draw.rect(self.Window,(30,30,30), (self.Conteiner_Vector[0] + self.button_Size[0] / 4,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1]),border_radius=5)
+        pygame.draw.rect(self.Window,(30,30,30), (self.Conteiner_Vector[0] + self.Conteiner_Size[0] - self.button_Size[0] - 25 ,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1]),border_radius=5)
+        self.Window.blit(self.criar, (self.Conteiner_Vector[0] + self.button_Size[0] / 4 + self.criar.get_width() / 2 + self.button_Size[0] / 4 - self.criar.get_width() / 2,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20 + self.button_Size[1] / 4))
+        self.Window.blit(self.cancelar,(self.Conteiner_Vector[0] + self.Conteiner_Size[0] - self.button_Size[0] - 25 + self.cancelar.get_width() / 2 + self.button_Size[0] / 4 - self.cancelar.get_width() / 2,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20+ self.button_Size[1] / 4))
+   
+    def Create_Objs(self) -> None:
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_press = pygame.mouse.get_pressed()
+        self.update_size_positions()
+        VectorY = 0
+        Vector2Y = 0
+        create_button = pygame.Rect(self.Conteiner_Vector[0] + self.button_Size[0] / 4,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1])
+
+        for icon in self.icons: 
+            self.Window.blit(icon, (self.Conteiner_Vector[0] + icon.get_width() / 2,self.Conteiner_Vector[1] + 10 + VectorY))
+            VectorY += icon.get_height() + 10
+            
+        for Name in self.Names:
+            text =  self.font2.render(f'{Name}',True, (200,200,200))
+            self.Window.blit(text, (self.Conteiner_Vector[0] + icon.get_width() / 2 + 30,self.Conteiner_Vector[1] + 12 + Vector2Y))
+            Obj_rect = pygame.Rect(self.Conteiner_Vector[0]  + icon.get_width() / 2,self.Conteiner_Vector[1] + 10 + Vector2Y,self.Conteiner_Size[0] - icon.get_width() / 2,icon.get_height())
+            obj_rect_select = pygame.Rect(self.Conteiner_Vector[0],self.Conteiner_Vector[1] + 10 + Vector2Y - 5,self.Conteiner_Size[0],icon.get_height() + 10)
+            Vector2Y += text.get_height() + 12
+
+            if mouse_press[0] and Obj_rect.collidepoint(mouse_pos):
+                self.obj_select = Name
+
+                if obj_rect_select != self.obj_select_rect: 
+                    self.obj_select_rect = obj_rect_select
+                    self.obj_select_visible = True
 
     def render_top_Data_objs(self):
         if self.visible:
@@ -456,15 +514,9 @@ class List_OBJS:
            pass
 
     def renderSetNewOBJ(self):
-        # pygame.draw.rect(self.Window, self.Color_addOBJ, (*self.Vec_SetOBJ, *self.Size_SetOBJ),border_radius=5)
-        # self.Window.blit(self.closeImg, (self.Size_SetOBJ[0] - self.closeImg.get_width(),self.Vec_SetOBJ[1]+10))
-        
-        # self.Window.blit(self.text_surface_Square, (self.Vec_Square))
-        # self.Window.blit(self.text_surface_Circle, (self.Vec_Circle))
-        # self.Window.blit(self.text_surface_triangle, (self.Vec_triangulo))
-        # self.Window.blit(self.text_surface_Camera, (self.VecCam))
-
-        self.Api_Gui.render(self.visibleSetOBJ)
+        pass
+        # self.update_size_positions()
+        # self.Api_Gui.render(self.visibleSetOBJ,self.Assents_gui,self.DATA_OBJ,self.Size)
 
     def renderDataObjs(self):
         self.update_size_positions()
@@ -517,6 +569,8 @@ class List_OBJS:
                     obj_name = self.font.render(f'{obj_name_p}', True, (255, 255, 255))
                     
                     match obj_type:
+                        case 'Sceen':
+                            self.Window.blit(self.sceen,(self.Vec_Inspector[0] + 20, y_position))
                         case 'Square': 
                             self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
                         case 'Circle':
@@ -569,8 +623,7 @@ class List_OBJS:
         if not mouse_press[0]:
            self.Mouse_pressed = False
         
-        self.Api_Gui.Changes_Datas()
-        cancelar_rect = pygame.Rect(self.Api_Gui.Conteiner_Vector[0] + self.Api_Gui.Conteiner_Size[0] - self.Api_Gui.button_Size[0] - 25 ,self.Api_Gui.Conteiner_Vector[1] + self.Api_Gui.Conteiner_Size[1] - self.Api_Gui.button_Size[1] - 20,self.Api_Gui.button_Size[0],self.Api_Gui.button_Size[1])
+        cancelar_rect = pygame.Rect(self.Conteiner_Vector[0] + self.Conteiner_Size[0] - self.button_Size[0] - 25 ,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1])
         
         if mouse_press[0]:
             if not self.click:
@@ -613,53 +666,61 @@ class List_OBJS:
                 self.cube.get_width() + triangle_text_rect.width,
                 max(self.cube.get_height(),triangle_text_rect.height)
             )
-            if mouse_press[0]:
-                if cube_add_button.collidepoint(mouse) and not self.Mouse_pressed:
-                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
-                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
-                    new_cube = {
-                      'type': 'Square',
-                      'name': 'Square',
-                      'visible_in_sceen': True,
-                      'position':[posX,posY],
-                      'angle': 0,
-                      'size': [50, 50],
-                      'color': [255, 255, 255],
-                      'indece': 0 
-                    } 
-                    self.config_project.add_object(new_cube)
-                    # add conteudo ao console 
-                    
-                    self.Mouse_pressed = True
-                if circle_add_button.collidepoint(mouse) and not self.Mouse_pressed:
-                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
-                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
-                    new_circle = { 
-                        'type': 'Circle',
-                        'name': 'Circle',
-                        'visible_in_sceen': True,
-                        'position': [posX,posY],
-                        'angle': 0,
-                        'size': [50],
-                        'color': [255,255,255], 
-                        'indece': 0
-                    }
-                    self.config_project.add_object(new_circle)
-                    self.Mouse_pressed = True
-                if triangle_add_button.collidepoint(mouse) and not self.Mouse_pressed and not self.create_main_sceen: 
-                    new_triangle = { 
-                        'type': 'Polygon',
-                        'name': 'Polygon',
-                        'visible_in_sceen': True,
-                        'position': [500,250],
-                        'angle': 0,
-                        'size': [50,50],
-                        'color': [255,255,255],
-                        'indece': 0
-                    }
-                    self.config_project.add_object(new_triangle)
-                    self.Mouse_pressed = True
-        
+            create_button = pygame.Rect(self.Conteiner_Vector[0] + self.button_Size[0] / 4,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1])
+            if self.visibleSetOBJ:
+                if mouse_press[0]:
+                    if not self.click2: 
+                        if create_button.collidepoint(mouse):
+                            match self.obj_select:
+                                case 'Nenhum': 
+                                    pass
+                                case 'Sceen2D':
+                                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
+                                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
+                                    new_Sceen = { 
+                                        'type': 'Sceen2D',
+                                        'name': 'Main_Sceen',
+                                        'visible_in_sceen': True,
+                                    }
+                                    self.config_project.add_object(new_Sceen)
+                                case 'Camera2D': 
+                                    pass
+                                case 'Polygon2D':
+                                    pass
+                                case 'Square': 
+                                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
+                                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
+                                    new_cube = {
+                                        'type': 'Square',
+                                        'name': 'Square',
+                                        'visible_in_sceen': True,
+                                        'position':[posX,posY],
+                                        'angle': 0,
+                                        'size': [50, 50],
+                                        'color': [255, 255, 255],
+                                        'indece': 0 
+                                    } 
+                                    self.config_project.add_object(new_cube)
+                                case 'Circle': 
+                                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
+                                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
+                                    new_circle = { 
+                                       'type': 'Circle',
+                                       'name': 'Circle',
+                                       'visible_in_sceen': True,
+                                       'position': [posX,posY],
+                                       'angle': 0,
+                                       'size': [50],
+                                       'color': [255,255,255], 
+                                       'indece': 0
+                                    }
+                                    self.config_project.add_object(new_circle)
+
+                    self.click2 = True   
+
+                else: 
+                  self.click2 = False
+
         if self.PPD_visible: 
             x = self.rect_obj_select[0] + self.Size[0] - 5 - self.view_img.get_width() * 4
             y = self.rect_obj_select[1] + self.cube.get_height() / 2 - 2
@@ -707,7 +768,12 @@ class List_OBJS:
             pygame.draw.rect(self.Window, self.Color, (*self.Vec, *self.Size))
             self.render_top_Data_objs()
             if self.visibleSetOBJ:
-                self.renderSetNewOBJ()
+                self.Create_Conteiner()
+                if self.obj_select_visible: 
+                    pygame.draw.rect(self.Window, (80,80,80), (self.obj_select_rect))
+
+                self.Create_Objs()
+                self.Create_Buttons()
             else:
                 if self.PPD_visible:
                     pygame.draw.rect(self.Window,(80,80,80), (self.rect_obj_select))
