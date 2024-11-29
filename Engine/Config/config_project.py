@@ -6,6 +6,7 @@ class ProjectConfig:
         self.project_path = project_path
         self.config_file = os.path.join(project_path, 'configs', 'config.json')
         self.config_data = {
+            'main_sceen': False,
             'objects': [],
             'last_index': 0,  # Campo para rastrear o último índice
         }
@@ -28,6 +29,15 @@ class ProjectConfig:
 
     def set(self, key, value):
         self.config_data[key] = value
+        self.save_config()
+    
+    def get_state_mainSceen(self) -> bool: 
+        state = self.config_data['main_sceen']
+        self.save_config()
+        return state
+
+    def change_mainSceen_state(self,state): 
+        self.config_data['main_sceen'] = state
         self.save_config()
 
     def add_object(self, obj):

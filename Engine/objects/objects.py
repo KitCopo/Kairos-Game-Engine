@@ -3,7 +3,8 @@
 Types = [
     'Square',
     'Circle',
-    'Polygon'
+    'Polygon',
+    'Sceen2D'
 ]
 
 # Version atual da Enine 

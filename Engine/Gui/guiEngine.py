@@ -513,11 +513,6 @@ class List_OBJS:
         else: 
            pass
 
-    def renderSetNewOBJ(self):
-        pass
-        # self.update_size_positions()
-        # self.Api_Gui.render(self.visibleSetOBJ,self.Assents_gui,self.DATA_OBJ,self.Size)
-
     def renderDataObjs(self):
         self.update_size_positions()
         objects = self.config_project.get('objects', [])
@@ -569,14 +564,14 @@ class List_OBJS:
                     obj_name = self.font.render(f'{obj_name_p}', True, (255, 255, 255))
                     
                     match obj_type:
-                        case 'Sceen':
+                        case 'Sceen2D':
                             self.Window.blit(self.sceen,(self.Vec_Inspector[0] + 20, y_position))
                         case 'Square': 
-                            self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
+                            self.Window.blit(self.cube, (self.Vec_Inspector[0] + 40, y_position))
                         case 'Circle':
-                            self.Window.blit(self.circle, (self.Vec_Inspector[0] + 20, y_position))
+                            self.Window.blit(self.circle, (self.Vec_Inspector[0] + 40, y_position))
                         case 'Polygon': 
-                            self.Window.blit(self.polygon, (self.Vec_Inspector[0] + 20, y_position))
+                            self.Window.blit(self.polygon, (self.Vec_Inspector[0] + 40, y_position))
                         case _:
                             print('Error (num: 01)')
                         
@@ -648,24 +643,6 @@ class List_OBJS:
                self.visibleSetOBJ = False
             
             # Adicionar objeto ao jogo e cena
-            cube_text_rect = self.text_surface_Square.get_rect()
-            cube_add_button = pygame.Rect(
-                self.VecCubeAdd[0],self.VecCubeAdd[1],
-                self.cube.get_width() + cube_text_rect.width,
-                max(self.cube.get_height(), cube_text_rect.height)
-            )
-            circle_text_rect = self.text_surface_Circle.get_rect()
-            circle_add_button = pygame.Rect( 
-                self.VecEsferaAdd[0],self.VecEsferaAdd[1],
-                self.cube.get_width() + circle_text_rect.width,
-                max(self.cube.get_height(),cube_text_rect.height)
-            )
-            triangle_text_rect = self.text_surface_triangle.get_rect()
-            triangle_add_button = pygame.Rect( 
-                self.VecTriangulo[0],self.VecTriangulo[1],
-                self.cube.get_width() + triangle_text_rect.width,
-                max(self.cube.get_height(),triangle_text_rect.height)
-            )
             create_button = pygame.Rect(self.Conteiner_Vector[0] + self.button_Size[0] / 4,self.Conteiner_Vector[1] + self.Conteiner_Size[1] - self.button_Size[1] - 20,self.button_Size[0],self.button_Size[1])
             if self.visibleSetOBJ:
                 if mouse_press[0]:
@@ -675,19 +652,24 @@ class List_OBJS:
                                 case 'Nenhum': 
                                     pass
                                 case 'Sceen2D':
-                                    posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
-                                    posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
                                     new_Sceen = { 
                                         'type': 'Sceen2D',
-                                        'name': 'Main_Sceen',
+                                        'name': 'Sceen2D',
                                         'visible_in_sceen': True,
+                                        'position': [self.Size_game_sceen[0]/2,self.Size_game_sceen[1] / 2],
+                                        'angle': 0,
+                                        'size': [0,0],
+                                        'color': [255,200,200],
+                                        'children': [],
+                                        'indece': 0
                                     }
                                     self.config_project.add_object(new_Sceen)
+                                    self.config_project.change_mainSceen_state(True)
                                 case 'Camera2D': 
                                     pass
                                 case 'Polygon2D':
                                     pass
-                                case 'Square': 
+                                case 'Square' if self.config_project.get_state_mainSceen(): 
                                     posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
                                     posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
                                     new_cube = {
@@ -701,7 +683,7 @@ class List_OBJS:
                                         'indece': 0 
                                     } 
                                     self.config_project.add_object(new_cube)
-                                case 'Circle': 
+                                case 'Circle' if self.config_project.get_state_mainSceen(): 
                                     posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
                                     posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
                                     new_circle = { 
