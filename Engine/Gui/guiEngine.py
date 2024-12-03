@@ -567,11 +567,11 @@ class List_OBJS:
                         case 'Sceen2D':
                             self.Window.blit(self.sceen,(self.Vec_Inspector[0] + 20, y_position))
                         case 'Square': 
-                            self.Window.blit(self.cube, (self.Vec_Inspector[0] + 40, y_position))
+                            self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
                         case 'Circle':
-                            self.Window.blit(self.circle, (self.Vec_Inspector[0] + 40, y_position))
+                            self.Window.blit(self.circle, (self.Vec_Inspector[0] + 20, y_position))
                         case 'Polygon': 
-                            self.Window.blit(self.polygon, (self.Vec_Inspector[0] + 40, y_position))
+                            self.Window.blit(self.polygon, (self.Vec_Inspector[0] + 20, y_position))
                         case _:
                             print('Error (num: 01)')
                         
@@ -663,7 +663,7 @@ class List_OBJS:
                                         'children': [],
                                         'indece': 0
                                     }
-                                    self.config_project.add_object(new_Sceen)
+                                    self.config_project.add_scene(new_Sceen)
                                     self.config_project.change_mainSceen_state(True)
                                 case 'Camera2D': 
                                     pass
