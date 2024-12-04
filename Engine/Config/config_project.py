@@ -7,7 +7,6 @@ class ProjectConfig:
         self.config_file = os.path.join(project_path, 'configs', 'config.json')
         self.config_data = {
             'main_sceen': False,
-            'scenes': [],
             'objects': [],
             'last_index': 0,  # Campo para rastrear o último índice
         }
@@ -48,12 +47,6 @@ class ProjectConfig:
         self.config_data['last_index'] += 1
         self.save_config()
     
-    def add_scene(self,scene): 
-        scene['indece'] = self.config_data['last_index']
-        self.config_data['scenes'].append(scene)
-        self.config_data['last_index'] += 1
-        self.save_config()
-
     def change_visible_obj(self,obj_id):
         objects = self.config_data.get('objects', [])
         for obj in objects: 
@@ -80,8 +73,6 @@ class ProjectConfig:
         return self.config_data.get('objects', [])
         
     def ensure_default_keys(self):
-        if 'scenes' not in self.config_data:
-            self.config_data['scenes'] = []
         if 'objects' not in self.config_data:
             self.config_data['objects'] = []
         if 'last_index' not in self.config_data:

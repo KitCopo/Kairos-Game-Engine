@@ -630,7 +630,7 @@ class List_OBJS:
 
         close_rect = pygame.Rect(self.Vec_imgADD[0], self.Vec_imgADD[1], self.addOBJ_img.get_width(), self.addOBJ_img.get_height())
         list_gui_rect = pygame.Rect(self.Vec[0],self.Vec[1],self.Size[0],self.Size[1])
-        area_rect = pygame.Rect(self.Vec_SetOBJ[0],self.Vec_SetOBJ[1] ,self.Size_SetOBJ[0],self.Size_SetOBJ[1])
+        # area_rect = pygame.Rect(self.Vec_SetOBJ[0],self.Vec_SetOBJ[1] ,self.Size_SetOBJ[0],self.Size_SetOBJ[1])
         if close_rect.collidepoint(mouse) and mouse_press[0]:
            self.visibleSetOBJ = True
            
@@ -663,7 +663,7 @@ class List_OBJS:
                                         'children': [],
                                         'indece': 0
                                     }
-                                    self.config_project.add_scene(new_Sceen)
+                                    self.config_project.add_object(new_Sceen)
                                     self.config_project.change_mainSceen_state(True)
                                 case 'Camera2D': 
                                     pass
