@@ -36,6 +36,7 @@ class Data_OBJS:
         self.text_name = KairosFontRender('Name',self.KF,(255,255,255))
         self.text_surface = self.font.render('Properties', True, (255, 255, 255))
         self.transformer_text = self.font2.render('Transform',True,(255,255,255))
+        self.visibility = self.font2.render('Visibility',True,(255,255,255))
         self.Position_text = self.font2.render('Position',True,(200,200,200))
         self.Rotation_text = self.font2.render('Rotation',True,(200,200,200))
         self.VectorX = self.font2.render('X',True,(200,200,200))
@@ -50,7 +51,10 @@ class Data_OBJS:
         self.eixo_img = pygame.image.load('Assents/eixo.png')
         self.active = False
         self.state_1 = False
+        self.state_2_ = False
         self.click = False
+        self.click2 = False
+        self.ajuste1 = 0
         self.ColorInput = (0,0,0)
         self.input = 'padrao text'
         self.update_size_position()
@@ -91,6 +95,7 @@ class Data_OBJS:
         close_rect = pygame.Rect(self.Vec_close[0],self.Vec_close[1],self.close_img.get_width(),self.close_img.get_height())
         
         trasformer_mesh_rect = pygame.Rect(self.Vec[0],self.Vec[1] + 99,self.transformer_text.get_width() *2,self.transformer_text.get_height())
+        visibility_mesh_rect = pygame.Rect(self.Vec[0],self.Vec[1] + 119 + self.ajuste1,self.visibility.get_width() * 2,self.visibility.get_height())
         if mouse_pressed[0]:
             if close_rect.collidepoint(mouse_pos):
                 self.visible = False
@@ -102,14 +107,24 @@ class Data_OBJS:
                     else: 
                        self.state_1 = True
                 self.click = True
+
+            if not self.click2:
+                if visibility_mesh_rect.collidepoint(mouse_pos):
+                    if self.state_2_:
+                        self.state_2_ = False
+                    else: 
+                        self.state_2_ = True
+                self.click2 = True
         else: 
             self.click = False
+            self.click2 = False
     
     def render_transformer(self,obj_type,obj_size,obj_pos,obj_angle): 
         self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 100,self.state_1)
-        self.Window.blit(self.transformer_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 100 - self.transformer_text.get_height() / 2 - 1))
+        self.Window.blit(self.transformer_text,(self.Vec[0] + self.visibility.get_width() / 2,self.Vec[1] + 101 - self.visibility.get_height() / 2 - 1))
     
         if self.state_1:
+            self.ajuste1 = 80
 
             self.Window.blit(self.Position_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
             self.Window.blit(self.VectorX,(self.VecX_vector_transformer[0],self.Vec[1] + 110 - self.transformer_text.get_height() / 2 - 1 + self.Position_text.get_height()))
@@ -146,6 +161,16 @@ class Data_OBJS:
             elif obj_type not in Types: 
                 print('Error (num: 01)')
                 
+        else: 
+            self.ajuste1 = 0
+
+    def render_visibility(self): 
+        self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 120 + self.ajuste1,self.state_2_)
+        self.Window.blit(self.visibility,(self.Vec[0] + self.visibility.get_width() / 2,self.Vec[1] + 121 - self.visibility.get_height() / 2 - 1 + self.ajuste1))
+
+        if self.state_2_: 
+            pass
+
     def render_propieties(self, obj_type, obj_id,obj_size,obj_pos,obj_angle):
         # Desenha a caixa de entrada
         pygame.draw.rect(self.Window, (10, 10, 10), (self.Vec_Inspector[0] + 5, self.Vec_Inspector[1] + 30, self.Size_Inspector[0] - 40, self.Size_Inspector[1]), border_radius=8)
@@ -163,6 +188,7 @@ class Data_OBJS:
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
         self.render_transformer(obj_type,obj_size,obj_pos,obj_angle)
+        self.render_visibility()
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -403,7 +429,7 @@ class List_OBJS:
         self. Camera2D = pygame.image.load('./Assents/Camera2D.svg')
         self.Polygon = pygame.image.load('./Assents/Polygon2D.svg')
         self.icons = [self.sceen,self.Camera2D,self.Polygon,self.square,self.Circle]
-        self.Names = ['Sceen2D','Camera2D','Polygon2D','Square','Circle']
+        self.Names = ['Scene2D','Camera2D','Polygon2D','Square','Circle']
 
         self.click2 = False
         self.obj_select_rect = 0
@@ -564,7 +590,7 @@ class List_OBJS:
                     obj_name = self.font.render(f'{obj_name_p}', True, (255, 255, 255))
                     
                     match obj_type:
-                        case 'Sceen2D':
+                        case 'Scene2D':
                             self.Window.blit(self.sceen,(self.Vec_Inspector[0] + 20, y_position))
                         case 'Square': 
                             self.Window.blit(self.cube, (self.Vec_Inspector[0] + 20, y_position))
@@ -593,8 +619,6 @@ class List_OBJS:
                         if self.rect_obj_select != object_rect_select:
                             self.rect_obj_select = object_rect_select
                 
-                    # elif mouse_clicked[2] and object_rect.collidepoint(mouse_pos):
-                    #     pass
             
                 y_position += self.cube.get_height() + 10    
     
@@ -651,14 +675,14 @@ class List_OBJS:
                             match self.obj_select:
                                 case 'Nenhum': 
                                     pass
-                                case 'Sceen2D':
+                                case 'Scene2D':
                                     new_Sceen = { 
-                                        'type': 'Sceen2D',
-                                        'name': 'Sceen2D',
+                                        'type': 'Scene2D',
+                                        'name': 'Scene2D',
                                         'visible_in_sceen': True,
                                         'position': [self.Size_game_sceen[0]/2,self.Size_game_sceen[1] / 2],
                                         'angle': 0,
-                                        'size': [0,0],
+                                        'size': [50,50],
                                         'color': [255,200,200],
                                         'children': [],
                                         'indece': 0
@@ -712,8 +736,13 @@ class List_OBJS:
             if mouse_press[0]:
                 if not self.clicked2: 
                     if lixeira_rect.collidepoint(mouse):
-                        self.config_project.delete_object(self.obj_id_select)
-                        self.PPD_visible = False
+                        if self.obj_type_select == 'Scene2D':
+                            self.config_project.change_mainSceen_state(False)
+                            self.config_project.delete_object(self.obj_id_select)
+                            self.PPD_visible = False
+                        else:
+                           self.config_project.delete_object(self.obj_id_select)
+                           self.PPD_visible = False
                     self.clicked2 = True
             else:
                 self.clicked2 = False
