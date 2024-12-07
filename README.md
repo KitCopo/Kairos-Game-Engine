@@ -1,1 +1,1 @@
-![Texto alternativo](./Assents/Karios_ft.png)
+![Texto alternativo](./Assents/Karios_ft.PNG)
