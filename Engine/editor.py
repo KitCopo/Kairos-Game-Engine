@@ -44,6 +44,8 @@ class Editor:
                     self.config.ClearBuffers()
                     running = False
                     break
+                
+                self.assents_obj.handle_scroll(event)
 
                 if event.type == pygame.VIDEORESIZE:
                     new_size = (max(event.w, 1000), max(event.h, 600))

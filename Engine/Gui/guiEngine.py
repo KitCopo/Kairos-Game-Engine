@@ -247,7 +247,6 @@ class Assents_OBJS:
         self.data_objs = data_objs 
         self.Window = Window 
         self.config = ConFig()
-        self.Chat_local = self.config.get('chat_local', [])
         self.Color = [34, 34, 34]
         self.Color_console = [10,10,10]
         self.Color_assents = [26,26,26]
@@ -255,7 +254,7 @@ class Assents_OBJS:
         self.ColorClearOutput = [51,51,51]
         self.Color_inspector = [60, 60, 60]
         self.font = pygame.font.SysFont('Arial', 12)
-        self.font2 = pygame.font.Font(None, int(15))
+        self.font2 = pygame.font.Font(None, int(14))
         self.text_surface = self.font.render('Assent Browser', True, (255, 255, 255))
         self.text_surface2 = self.font.render('Console', True, (255, 255, 255))
         self.text_Clear = self.font.render('Clear',True, (255,255,255))
@@ -269,11 +268,14 @@ class Assents_OBJS:
         self.folderImg = pygame.transform.scale(self.folderImg, (64, 64))
         self.close = pygame.image.load('./Assents/close (2).png')
         self.close = pygame.transform.scale(self.close,(8,8))
+        self.start = True
         self.visibleOpçoes = 'Console'
         self.red_visible = False
         self.mouse_dragging = False
         self.dragging_start_pos = None
         self.start_size = None
+        self.scroll_offset = 0  # Índice inicial do scroll
+        self.visible_messages = 10  
         self.update_size_positions()
     
     def update_size_positions(self):
@@ -330,27 +332,50 @@ class Assents_OBJS:
         self.Window.blit(self.text_surface2, (self.Vec[0] + 30,self.Vec[1] + 6))
         self.Window.blit(self.text_surface, (self.Vec[0] + self.size_assents_bar[0] + 40,self.Vec[1] + 6))
         self.Window.blit(self.close,(self.Vec[0] + self.Size[0] - 20,self.Vec[1] + 7))
+        
+        # pygame.draw.rect()
+        # pygame.draw.rect()
+        # self.Window.blit()
+        # self.Window.blit()
     
     def addMensageBank(self, type: str, user_mensage: str) -> None:
         self.config.addMensageBank(type,user_mensage)
     
     def ClearBuffers(self) -> None:
         self.config.ClearBuffers()
-        
+    
+    def start_console(self):
+        self.addMensageBank('Mensage',f'kairos Engine {VERSION_ENGINE} (py) 2024-???? Marcos Antônio & Kairos Contributors')
+        self.addMensageBank('Kairos', f'--- pygame server started ---')
+    
+    def handle_scroll(self, event):
+        # Evento de scroll com o mouse
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:  # Scroll para cima
+                self.scroll_offset = max(0, self.scroll_offset - 1)
+            elif event.button == 5:  # Scroll para baixo
+                self.scroll_offset = min(len(self.Chat_local) - self.visible_messages, self.scroll_offset + 1)
+
+    
     def renderConsole(self):
         #console Version 0.0.1
         #include Debug , Errors , Alerts , Mensagens
-        self.addMensageBank('Mensage',f'kairos Engine {VERSION_ENGINE} (py) 2024-???? Marcos Antônio & Kairos Contributors')
-        self.addMensageBank('Kairos', f'--- pygame server started ---')
-        
         self.update_size_positions()
+        self.Chat_local = self.config.get('chat_local', [])
+        
+        visible_messages = self.Chat_local[self.scroll_offset:self.scroll_offset + self.visible_messages]
+        
+        if self.start:
+            self.start_console()
+            self.start = False 
+            
         data_objs_size = self.data_objs.Size
         Size = [self.Window.get_width() - data_objs_size[0] - 2, int(self.Window.get_height() * 0.25)]
         Vec = [0,self.Window.get_height() - self.Size[1]]
         y_offset = Vec[1] + 30
         background_color = (20,20,20)
         pygame.draw.rect(self.Window, background_color, (Vec[0] + 3,Vec[1] + 25,Size[0] - 6,Size[1] - 30),border_radius=5)
-        for message in self.Chat_local:
+        for message in visible_messages:
             # Define cor de texto e ícone
             color = (200, 200, 200) if message['type'] == 'Mensage' else (255, 165, 0) if message['type'] == 'Warning' else (255, 0, 0) if message['type'] == 'Error' else (150,150,150)
             
@@ -361,8 +386,6 @@ class Assents_OBJS:
             self.Window.blit(text_surface, (Vec[0] + 10 , y_offset))
             
             y_offset += text_surface.get_height() + 5  # Espaçamento entre mensagens
-            
-        self.ClearBuffers()
         
     def renderFolder(self):
         spacing = 0
@@ -719,6 +742,7 @@ class List_OBJS:
                                     }
                                     self.config_project.add_object(new_Sceen)
                                     self.config_project.change_mainSceen_state(True)
+                                    self.Assents_gui.addMensageBank('Kairos','Criar CanvaItem')
                                 case 'Camera2D': 
                                     pass
                                 case 'Polygon2D':
@@ -737,6 +761,7 @@ class List_OBJS:
                                         'indece': 0 
                                     } 
                                     self.config_project.add_object(new_cube)
+                                    self.Assents_gui.addMensageBank('Kairos','Criar CanvaItem')
                                 case 'Circle' if self.config_project.get_state_mainSceen(): 
                                     posX = randint(0 + self.Size[0] + 50,self.Window.get_width() - self.DATA_OBJ.Size[0] - 50)
                                     posY = randint(100,self.Window.get_height() - self.Assents_gui.Size[1] - 50)
@@ -751,6 +776,7 @@ class List_OBJS:
                                        'indece': 0
                                     }
                                     self.config_project.add_object(new_circle)
+                                    self.Assents_gui.addMensageBank('Kairos','Criar CanvaItem')
 
                     self.click2 = True   
 
@@ -769,9 +795,11 @@ class List_OBJS:
                         if self.obj_type_select == 'Scene2D':
                             self.config_project.change_mainSceen_state(False)
                             self.config_project.delete_object(self.obj_id_select)
+                            self.Assents_gui.addMensageBank('Kairos','Delete CanvaItem')
                             self.PPD_visible = False
                         else:
                            self.config_project.delete_object(self.obj_id_select)
+                           self.Assents_gui.addMensageBank('Kairos','Delete CanvaItem')
                            self.PPD_visible = False
                     self.clicked2 = True
             else:
@@ -781,6 +809,7 @@ class List_OBJS:
                 if not self.clicked:
                     if view_rect.collidepoint(mouse):
                         self.config_project.change_visible_obj(self.obj_id_select)
+                        self.Assents_gui.addMensageBank('Kairos','Alterar Visibilidade')
                     self.clicked = True
             else: 
                 self.clicked = False
