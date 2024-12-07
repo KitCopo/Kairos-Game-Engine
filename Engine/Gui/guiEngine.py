@@ -9,6 +9,7 @@ from Funcs import *
 from random import randint
 from Console.console import *
 from objects.objects import Types
+from objects.objects import VERSION_ENGINE
 import configparser
 
 config_file_path = os.path.join(os.path.dirname(__file__), './Console/configs.ini')
@@ -245,9 +246,8 @@ class Assents_OBJS:
         self.visible = True
         self.data_objs = data_objs 
         self.Window = Window 
-        self.console_api = Console(self.Window,self.data_objs)
-        self.console_api.addMensageBank('Mensage','Kairos Engine v0.0.1B Stable.Official (py) 2024 - ????, Marcos Antônio')
-        self.console_api.addMensageBank('Kairos', '--- Pygame Server Started ---')
+        self.config = ConFig()
+        self.Chat_local = self.config.get('chat_local', [])
         self.Color = [34, 34, 34]
         self.Color_console = [10,10,10]
         self.Color_assents = [26,26,26]
@@ -255,6 +255,7 @@ class Assents_OBJS:
         self.ColorClearOutput = [51,51,51]
         self.Color_inspector = [60, 60, 60]
         self.font = pygame.font.SysFont('Arial', 12)
+        self.font2 = pygame.font.Font(None, int(15))
         self.text_surface = self.font.render('Assent Browser', True, (255, 255, 255))
         self.text_surface2 = self.font.render('Console', True, (255, 255, 255))
         self.text_Clear = self.font.render('Clear',True, (255,255,255))
@@ -329,9 +330,39 @@ class Assents_OBJS:
         self.Window.blit(self.text_surface2, (self.Vec[0] + 30,self.Vec[1] + 6))
         self.Window.blit(self.text_surface, (self.Vec[0] + self.size_assents_bar[0] + 40,self.Vec[1] + 6))
         self.Window.blit(self.close,(self.Vec[0] + self.Size[0] - 20,self.Vec[1] + 7))
-
+    
+    def addMensageBank(self, type: str, user_mensage: str) -> None:
+        self.config.addMensageBank(type,user_mensage)
+    
+    def ClearBuffers(self) -> None:
+        self.config.ClearBuffers()
+        
     def renderConsole(self):
-        self.console_api.Show()
+        #console Version 0.0.1
+        #include Debug , Errors , Alerts , Mensagens
+        self.addMensageBank('Mensage',f'kairos Engine {VERSION_ENGINE} (py) 2024-???? Marcos Antônio & Kairos Contributors')
+        self.addMensageBank('Kairos', f'--- pygame server started ---')
+        
+        self.update_size_positions()
+        data_objs_size = self.data_objs.Size
+        Size = [self.Window.get_width() - data_objs_size[0] - 2, int(self.Window.get_height() * 0.25)]
+        Vec = [0,self.Window.get_height() - self.Size[1]]
+        y_offset = Vec[1] + 30
+        background_color = (20,20,20)
+        pygame.draw.rect(self.Window, background_color, (Vec[0] + 3,Vec[1] + 25,Size[0] - 6,Size[1] - 30),border_radius=5)
+        for message in self.Chat_local:
+            # Define cor de texto e ícone
+            color = (200, 200, 200) if message['type'] == 'Mensage' else (255, 165, 0) if message['type'] == 'Warning' else (255, 0, 0) if message['type'] == 'Error' else (150,150,150)
+            
+            # Exibe o ícone ao lado da mensagem
+            # Renderiza o texto
+            text_surface = self.font2.render(message['mensage'], True, color)
+
+            self.Window.blit(text_surface, (Vec[0] + 10 , y_offset))
+            
+            y_offset += text_surface.get_height() + 5  # Espaçamento entre mensagens
+            
+        self.ClearBuffers()
         
     def renderFolder(self):
         spacing = 0
@@ -375,7 +406,6 @@ class List_OBJS:
         self.Color = [34, 34, 34]
         self.Color_inspector = [80, 80, 80]
         self.Color_addOBJ = [50,50, 50]
-        self.console_api = Console(self.Window,self.DATA_OBJ)
         self.font = pygame.font.SysFont('Arial', 12)
         self.font2 = pygame.font.SysFont('Arial',12,True)
         self.text_surface = self.font.render('Scene Graph', True, (255, 255, 255))

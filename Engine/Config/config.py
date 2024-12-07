@@ -47,6 +47,7 @@ class Config:
             if project['id'] == project_id: 
                 project['name'] = new_name
                 break
+        self.save_config()
 
     def ensure_default_keys(self):
         if 'projects' not in self.config_data:
