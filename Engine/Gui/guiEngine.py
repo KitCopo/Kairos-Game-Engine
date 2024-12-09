@@ -7,8 +7,7 @@ from Scene_2D.compilador import *
 from Gui.forms_gui import *
 from Funcs import *
 from random import randint
-from objects.objects import Types
-from objects.objects import VERSION_ENGINE
+from objects.objects import *
 import configparser
 
 config_file_path = os.path.join(os.path.dirname(__file__), './Console/configs.ini')
@@ -333,6 +332,8 @@ class Assents_OBJS:
     
     def start_console(self):
         self.addMensageBank('Mensage',f'kairos Engine {VERSION_ENGINE} (py) 2024-???? Marcos Antônio & Kairos Contributors')
+        self.addMensageBank('Mensage', f'Console {VERSION_CONSOLE}')
+        self.addMensageBank('Mensage', f'Compilador_py_pygame {VERSION_PYGAME_PY_COMPILER}')
         self.addMensageBank('Kairos', f'--- pygame server started ---')
     
     def handle_scroll(self, event):
