@@ -7,7 +7,6 @@ from Scene_2D.compilador import *
 from Gui.forms_gui import *
 from Funcs import *
 from random import randint
-from Console.console import *
 from objects.objects import Types
 from objects.objects import VERSION_ENGINE
 import configparser
@@ -204,17 +203,6 @@ class Data_OBJS:
             self.active = False
             self.ColorInput = (0, 0, 0)
 
-        # for event in pygame.event.get():
-        #     if event.type == pygame.KEYDOWN and self.active:
-        #         if event.key == pygame.K_RETURN:
-        #             # Atualiza o JSON com o novo nome
-        #             self.update_object_name_in_json(obj_id,obj_name)
-        #             self.input = ''
-        #         elif event.key == pygame.K_BACKSPACE:
-        #             self.input = self.input[:-1]
-        #         else:
-        #             if len(self.input) < 15:
-        #                 self.input += event.unicode
         
         pygame.draw.rect(self.Window, self.ColorInput, (self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 22), border_radius=10)               
         self.Window.blit(KairosFontRender(obj_name, self.KF, (255, 255, 255)), (self.Vec[0] + self.Size[0] / 2, self.Vec_Inspector[1] + 14 + 48))
@@ -275,7 +263,11 @@ class Assents_OBJS:
         self.dragging_start_pos = None
         self.start_size = None
         self.scroll_offset = 0  # Índice inicial do scroll
-        self.visible_messages = 10  
+        self.current_input = ""
+        self.active = False
+        self.active_input = False
+        self.input_area = None
+        self.border = 1
         self.update_size_positions()
     
     def update_size_positions(self):
@@ -333,11 +325,6 @@ class Assents_OBJS:
         self.Window.blit(self.text_surface, (self.Vec[0] + self.size_assents_bar[0] + 40,self.Vec[1] + 6))
         self.Window.blit(self.close,(self.Vec[0] + self.Size[0] - 20,self.Vec[1] + 7))
         
-        # pygame.draw.rect()
-        # pygame.draw.rect()
-        # self.Window.blit()
-        # self.Window.blit()
-    
     def addMensageBank(self, type: str, user_mensage: str) -> None:
         self.config.addMensageBank(type,user_mensage)
     
@@ -350,34 +337,72 @@ class Assents_OBJS:
     
     def handle_scroll(self, event):
         # Evento de scroll com o mouse
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_pressed = pygame.mouse.get_pressed()
+        if mouse_pressed[0]: 
+            if not self.active_input: 
+                if self.input_area.collidepoint(mouse_pos):
+                    self.active = True
+                    self.border = 0
+                else: 
+                    self.active = False
+                    self.border = 1
+                
+                self.active_input = True
+        else: 
+            self.active_input = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:            
             if event.button == 4:  # Scroll para cima
                 self.scroll_offset = max(0, self.scroll_offset - 1)
             elif event.button == 5:  # Scroll para baixo
                 self.scroll_offset = min(len(self.Chat_local) - self.visible_messages, self.scroll_offset + 1)
-
+        
+        if self.active:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Adicionar mensagem ao Chat_local
+                   self.addMensageBank('Mensage', self.current_input)
+                   self.process_command(self.current_input)
+                   self.current_input = ""  # Limpar entrada após o envio da mensagem
+                elif event.key == pygame.K_BACKSPACE:  # Apagar o último caractere
+                   self.current_input = self.current_input[:-1]
+                else:
+                   self.current_input += event.unicode  # Adicionar caractere digitado ao texto atual
     
+    def process_command(self,command): 
+        match command:
+            case 'clear': 
+                self.ClearBuffers()
+            case _: 
+                self.addMensageBank('Error', f'{command} : O termo {command} não é reconhecido como nome de cmdlet,função, arquivo de script ou programa operável.Verifique a grafia do nome ')
+
     def renderConsole(self):
         #console Version 0.0.1
         #include Debug , Errors , Alerts , Mensagens
         self.update_size_positions()
         self.Chat_local = self.config.get('chat_local', [])
-        
-        visible_messages = self.Chat_local[self.scroll_offset:self.scroll_offset + self.visible_messages]
-        
+
         if self.start:
             self.start_console()
             self.start = False 
             
         data_objs_size = self.data_objs.Size
         Size = [self.Window.get_width() - data_objs_size[0] - 2, int(self.Window.get_height() * 0.25)]
-        Vec = [0,self.Window.get_height() - self.Size[1]]
-        y_offset = Vec[1] + 30
+        Vec = [0,self.Window.get_height() - self.Size[1] + self.size_assents_bar2[1]]
+        self.input_area = pygame.Rect(
+            Vec[0],  # Posição X do input
+            Vec[1],  # Posição Y (última posição de y_offset)
+            Size[0],  # Largura do input (ajuste conforme necessário)
+            Size[1]  # Altura do input (ajuste conforme necessário)
+        )
+        self.visible_messages = Size[1] // self.font2.get_height()
+        visible_messages = self.Chat_local[self.scroll_offset:self.scroll_offset + self.visible_messages]
+        y_offset = Vec[1] + 15
         background_color = (20,20,20)
-        pygame.draw.rect(self.Window, background_color, (Vec[0] + 3,Vec[1] + 25,Size[0] - 6,Size[1] - 30),border_radius=5)
+        pygame.draw.rect(self.Window, background_color, (Vec[0] + 3,Vec[1] + 5,Size[0] - 6,Size[1] - 10),border_radius=5)
         for message in visible_messages:
             # Define cor de texto e ícone
-            color = (200, 200, 200) if message['type'] == 'Mensage' else (255, 165, 0) if message['type'] == 'Warning' else (255, 0, 0) if message['type'] == 'Error' else (150,150,150)
+            color = (200, 200, 200) if message['type'] == 'Mensage' else (255, 165, 0) if message['type'] == 'Warning' else (230, 100, 100) if message['type'] == 'Error' else (150,150,150)
             
             # Exibe o ícone ao lado da mensagem
             # Renderiza o texto
@@ -386,6 +411,11 @@ class Assents_OBJS:
             self.Window.blit(text_surface, (Vec[0] + 10 , y_offset))
             
             y_offset += text_surface.get_height() + 5  # Espaçamento entre mensagens
+        
+        input_color = (200, 200, 200)
+        input_surface = self.font2.render("> " + self.current_input, True, input_color)
+        self.Window.blit(input_surface, (Vec[0] + 10, y_offset))
+        pygame.draw.rect(self.Window, (255, 255, 255), (Vec[0] + 25 + input_surface.get_width(), y_offset + 1, 5, 10), width=self.border)
         
     def renderFolder(self):
         spacing = 0
@@ -727,7 +757,7 @@ class List_OBJS:
                         if create_button.collidepoint(mouse):
                             match self.obj_select:
                                 case 'Nenhum': 
-                                    pass
+                                    self.Assents_gui.addMensageBank('Warning','Selecione um item antes de crialo')
                                 case 'Scene2D':
                                     new_Sceen = { 
                                         'type': 'Scene2D',
@@ -777,6 +807,11 @@ class List_OBJS:
                                     }
                                     self.config_project.add_object(new_circle)
                                     self.Assents_gui.addMensageBank('Kairos','Criar CanvaItem')
+
+                                case 'Square' if not self.config_project.get_state_mainSceen():
+                                    self.Assents_gui.addMensageBank('Error','Crie uma scene antes de criar um CanvaItem , ela devera conter o CanvaItem como Filho')
+                                case 'Circle' if not self.config_project.get_state_mainSceen():
+                                    self.Assents_gui.addMensageBank('Error','Crie uma scene antes de criar um CanvaItem , ela devera conter o CanvaItem como Filho')
 
                     self.click2 = True   
 

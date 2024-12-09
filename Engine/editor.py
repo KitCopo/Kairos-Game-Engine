@@ -2,7 +2,6 @@ import pygame
 from Config.config_engine import ConFig
 from Gui.gui import Settings
 from Gui.guiEngine import Data_OBJS, Assents_OBJS, List_OBJS, Top_bars
-from Console.console import *
 from objects.objects import VERSION_ENGINE
 
 class Editor:

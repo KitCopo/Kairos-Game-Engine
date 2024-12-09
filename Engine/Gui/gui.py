@@ -355,14 +355,18 @@ class SetNewObj:
                 self.path_project_mouse_passed = project['path']
                 
                 if mouse_pressed[0]:
-                    self.Config.add_project_data(False)
-                    new_data = { 
-                        'name': project['name'],
-                        'path': project['path']     
-                    }
-                    self.Config.set_project_name(new_data)
-                    from editor import run_editor
-                    run_editor(new_data)
+                    if os.path.exists(project['path']):
+                        self.Config.add_project_data(False)
+                        new_data = { 
+                           'name': project['name'],
+                          'path': project['path']     
+                        }
+                        self.Config.set_project_name(new_data)
+                        from editor import run_editor
+                        run_editor(new_data)
+                    else: 
+                        self.error_mensage = f"Erro: O caminho '{project['path']}' não existe no seu computador"
+                        self.error_box = True
                     
                 if mouse_pressed[2] and not self.delete_visible and not self.charge_visible:
                     self.charge_visible = True
@@ -456,7 +460,7 @@ class SetNewObj:
                     self.active3 = False
             
             if self.error_box:
-                text = self.font.render(self.error_mensage,True,(230,230,230))
+                text = self.font.render(self.error_mensage,True,(230,100,100))
                 pygame.draw.rect(self.WINDOW,(50,50,50),(self.WINDOW.get_width() / 2 - text.get_width()/2,130,text.get_width() + 20,40),border_radius=5)
                 self.WINDOW.blit(text, (self.WINDOW.get_width() / 2 - 100 + 110 - text.get_width()/2,130 + text.get_height()/2 + 3))
             
