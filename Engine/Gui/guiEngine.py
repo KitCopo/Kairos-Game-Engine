@@ -35,7 +35,8 @@ class Data_OBJS:
         self.text_name = KairosFontRender('Name',self.KF,(255,255,255))
         self.text_surface = self.font.render('Properties', True, (255, 255, 255))
         self.transformer_text = self.font2.render('Transform',True,(255,255,255))
-        self.visibility = self.font2.render('Visibility',True,(255,255,255))
+        self.visibility = self.font2.render('Ordering',True,(255,255,255))
+        self.visible_text = self.font2.render('Z-index',True, (200,200,200))
         self.Position_text = self.font2.render('Position',True,(200,200,200))
         self.Rotation_text = self.font2.render('Rotation',True,(200,200,200))
         self.VectorX = self.font2.render('X',True,(200,200,200))
@@ -48,11 +49,15 @@ class Data_OBJS:
         self.close_img = pygame.transform.scale(self.close_img,(8,8))
         self.Name_img = pygame.image.load('Assents/letter-n (1).png')
         self.eixo_img = pygame.image.load('Assents/eixo.png')
+        self.view_img = pygame.image.load('./Assents/view.png')
+        self.hiden = pygame.image.load('./Assents/hidden.png')
         self.active = False
         self.state_1 = False
         self.state_2_ = False
         self.click = False
         self.click2 = False
+        self.controler_clicker = False
+        self.state_visible = True
         self.ajuste1 = 0
         self.ColorInput = (0,0,0)
         self.input = 'padrao text'
@@ -79,6 +84,7 @@ class Data_OBJS:
         self.VecX_input_transformer = [self.VecX_vector_transformer[0] + 15]
         self.VecY_input_transformer = [self.VecY_vector_trasformer[0] + 15]
         self.Size_input_transformer = [int(self.Size[0] * 0.25) - 20,20]
+        self.state_rect = pygame.Rect(self.VecX_vector_transformer[0] - 7,self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height() - 7,30,30)
     
     def render_top_Data_objs(self):
         self.update_size_position()
@@ -114,6 +120,7 @@ class Data_OBJS:
                     else: 
                         self.state_2_ = True
                 self.click2 = True
+            
         else: 
             self.click = False
             self.click2 = False
@@ -163,12 +170,32 @@ class Data_OBJS:
         else: 
             self.ajuste1 = 0
 
-    def render_visibility(self): 
+    def render_visibility(self,obj_id): 
         self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 120 + self.ajuste1,self.state_2_)
         self.Window.blit(self.visibility,(self.Vec[0] + self.visibility.get_width() / 2,self.Vec[1] + 121 - self.visibility.get_height() / 2 - 1 + self.ajuste1))
 
         if self.state_2_: 
-            pass
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+            if mouse_pressed[0]:
+                if not self.controler_clicker: 
+                    if self.state_rect.collidepoint(mouse_pos):
+                        self.config.addMensageBank('Kairos','hello')
+                        if self.state_visible: 
+                           self.state_visible = False
+                        else: 
+                           self.state_visible = True
+ 
+                    self.controler_clicker = True
+            else:
+                self.controler_clicker = False
+            self.Window.blit(self.visible_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
+            pygame.draw.rect(self.Window, (10,10,10), (self.state_rect),border_radius=10)
+
+            if self.state_visible: 
+                self.Window.blit(self.view_img,(self.VecX_vector_transformer[0],self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
+            else: 
+                self.Window.blit(self.hiden, (self.VecX_vector_transformer[0],self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
 
     def render_propieties(self, obj_type, obj_id,obj_size,obj_pos,obj_angle):
         # Desenha a caixa de entrada
@@ -187,7 +214,7 @@ class Data_OBJS:
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
         self.render_transformer(obj_type,obj_size,obj_pos,obj_angle)
-        self.render_visibility()
+        self.render_visibility(obj_id)
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -334,7 +361,7 @@ class Assents_OBJS:
         self.addMensageBank('Mensage',f'kairos Engine {VERSION_ENGINE} (py) 2024-???? Marcos Antônio & Kairos Contributors')
         self.addMensageBank('Mensage', f'Console {VERSION_CONSOLE}')
         self.addMensageBank('Mensage', f'Compilador_py_pygame {VERSION_PYGAME_PY_COMPILER}')
-        self.addMensageBank('Kairos', f'--- pygame server started ---')
+        self.addMensageBank('Kairos', f'---  pygame server started  ---')
     
     def handle_scroll(self, event):
         # Evento de scroll com o mouse
@@ -388,7 +415,7 @@ class Assents_OBJS:
             self.start = False 
             
         data_objs_size = self.data_objs.Size
-        Size = [self.Window.get_width() - data_objs_size[0] - 2, int(self.Window.get_height() * 0.25)]
+        Size = [self.Size[0],self.Size[1]]
         Vec = [0,self.Window.get_height() - self.Size[1] + self.size_assents_bar2[1]]
         self.input_area = pygame.Rect(
             Vec[0],  # Posição X do input
@@ -400,7 +427,7 @@ class Assents_OBJS:
         visible_messages = self.Chat_local[self.scroll_offset:self.scroll_offset + self.visible_messages]
         y_offset = Vec[1] + 15
         background_color = (20,20,20)
-        pygame.draw.rect(self.Window, background_color, (Vec[0] + 3,Vec[1] + 5,Size[0] - 6,Size[1] - 10),border_radius=5)
+        pygame.draw.rect(self.Window, background_color, (Vec[0],Vec[1],Size[0],Size[1]),border_radius=0)
         for message in visible_messages:
             # Define cor de texto e ícone
             color = (200, 200, 200) if message['type'] == 'Mensage' else (255, 165, 0) if message['type'] == 'Warning' else (230, 100, 100) if message['type'] == 'Error' else (150,150,150)
@@ -510,7 +537,7 @@ class List_OBJS:
         self.sceen = pygame.image.load('./Assents/Node2D.svg')
         self.square = pygame.image.load('./Assents/CollisionShape2D.svg')
         self.Circle = pygame.image.load('./Assents/CircleShape2D.svg')
-        self. Camera2D = pygame.image.load('./Assents/Camera2D.svg')
+        self.Camera2D = pygame.image.load('./Assents/Camera2D.svg')
         self.Polygon = pygame.image.load('./Assents/Polygon2D.svg')
         self.icons = [self.sceen,self.Camera2D,self.Polygon,self.square,self.Circle]
         self.Names = ['Scene2D','Camera2D','Polygon2D','Square','Circle']
