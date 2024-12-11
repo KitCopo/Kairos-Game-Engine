@@ -6,9 +6,26 @@
     "project_data": false,
     "project_select": [
         {
-            "name": "game_pedro_pc",
-            "path": "C:/Users/Visitantes/Desktop/Kairos_projetos"
+            "name": "GamePcMarcos",
+            "path": "C:/Users/Marcos/Desktop/Kairos Testes"
         }
     ],
-    "chat_local": []
+    "chat_local": [
+        {
+            "type": "Mensage",
+            "mensage": "kairos Engine v0.0.1 Alpha.official (py) 2024-???? Marcos Ant\u00f4nio & Kairos Contributors"
+        },
+        {
+            "type": "Mensage",
+            "mensage": "Console v0.0.3 Stable"
+        },
+        {
+            "type": "Mensage",
+            "mensage": "Compilador_py_pygame v0.0.1 Beta"
+        },
+        {
+            "type": "Kairos",
+            "mensage": "---  pygame server started  ---"
+        }
+    ]
 }

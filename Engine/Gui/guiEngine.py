@@ -35,8 +35,8 @@ class Data_OBJS:
         self.text_name = KairosFontRender('Name',self.KF,(255,255,255))
         self.text_surface = self.font.render('Properties', True, (255, 255, 255))
         self.transformer_text = self.font2.render('Transform',True,(255,255,255))
-        self.visibility = self.font2.render('Ordering',True,(255,255,255))
-        self.visible_text = self.font2.render('Z-index',True, (200,200,200))
+        self.visibility = self.font2.render('Visibility',True,(255,255,255))
+        self.visible_text = self.font2.render('Visible',True, (200,200,200))
         self.Position_text = self.font2.render('Position',True,(200,200,200))
         self.Rotation_text = self.font2.render('Rotation',True,(200,200,200))
         self.VectorX = self.font2.render('X',True,(200,200,200))
@@ -48,7 +48,6 @@ class Data_OBJS:
         self.close_img = pygame.image.load('Assents/close (2).png')
         self.close_img = pygame.transform.scale(self.close_img,(8,8))
         self.Name_img = pygame.image.load('Assents/letter-n (1).png')
-        self.eixo_img = pygame.image.load('Assents/eixo.png')
         self.view_img = pygame.image.load('./Assents/view.png')
         self.hiden = pygame.image.load('./Assents/hidden.png')
         self.active = False
@@ -56,8 +55,6 @@ class Data_OBJS:
         self.state_2_ = False
         self.click = False
         self.click2 = False
-        self.controler_clicker = False
-        self.state_visible = True
         self.ajuste1 = 0
         self.ColorInput = (0,0,0)
         self.input = 'padrao text'
@@ -170,32 +167,6 @@ class Data_OBJS:
         else: 
             self.ajuste1 = 0
 
-    def render_visibility(self,obj_id): 
-        self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.Vec[0] + 6,self.Vec[1] + 120 + self.ajuste1,self.state_2_)
-        self.Window.blit(self.visibility,(self.Vec[0] + self.visibility.get_width() / 2,self.Vec[1] + 121 - self.visibility.get_height() / 2 - 1 + self.ajuste1))
-
-        if self.state_2_: 
-            mouse_pos = pygame.mouse.get_pos()
-            mouse_pressed = pygame.mouse.get_pressed()
-            if mouse_pressed[0]:
-                if not self.controler_clicker: 
-                    if self.state_rect.collidepoint(mouse_pos):
-                        self.config.addMensageBank('Kairos','hello')
-                        if self.state_visible: 
-                           self.state_visible = False
-                        else: 
-                           self.state_visible = True
- 
-                    self.controler_clicker = True
-            else:
-                self.controler_clicker = False
-            self.Window.blit(self.visible_text,(self.Vec[0] + self.transformer_text.get_width() / 2,self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
-            pygame.draw.rect(self.Window, (10,10,10), (self.state_rect),border_radius=10)
-
-            if self.state_visible: 
-                self.Window.blit(self.view_img,(self.VecX_vector_transformer[0],self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
-            else: 
-                self.Window.blit(self.hiden, (self.VecX_vector_transformer[0],self.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.ajuste1 + self.visible_text.get_height()))
 
     def render_propieties(self, obj_type, obj_id,obj_size,obj_pos,obj_angle):
         # Desenha a caixa de entrada
@@ -214,7 +185,7 @@ class Data_OBJS:
         # Caixa de input
         # KairosInput(self.Window,self.ColorInput,(12,12,12),(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + text_type.get_height() + 48),(int(self.Size[0] * 0.5), 22),BorderRadius=10)
         self.render_transformer(obj_type,obj_size,obj_pos,obj_angle)
-        self.render_visibility(obj_id)
+        # self.render_visibility(obj_id)
                         
     def render_input(self,obj_name,obj_id):
         input_rect = pygame.Rect(self.Vec[0] + self.Size[0] / 2 - 5, self.Vec_Inspector[1] + 12 + 48, int(self.Size[0] * 0.5), 20)
@@ -294,6 +265,8 @@ class Assents_OBJS:
         self.active_input = False
         self.input_area = None
         self.border = 1
+        
+
         self.update_size_positions()
     
     def update_size_positions(self):
@@ -320,7 +293,7 @@ class Assents_OBJS:
             self.size_assents_bar2 = [int(self.Size[0] * 0.13),self.side_bar[1]]
         else:
             self.Size = [0, 0]
-    
+        
     def CollisionGUI(self):
         self.update_size_positions()
         console_rect = pygame.Rect(self.Vec[0] + self.size_assents_bar[0],self.Vec[1],self.size_assents_bar2[0],self.size_assents_bar2[1])
@@ -459,8 +432,6 @@ class Assents_OBJS:
             self.Window.blit(self.folderImg, (self.Vec[0] + 10 + spacing, self.Vec[1] + 40 + spacingH))
             spacing += folder_width  
     
-        # self.Window.blit(self.folderAddImg, (self.Size[0] - self.folderAddImg.get_width() - 10, self.Vec[1] + 10))
-    
     def render(self):
         if self.visible:
             self.CollisionGUI()
@@ -483,6 +454,7 @@ class List_OBJS:
         self.Assents_gui = Assents_OBJS
         self.DATA_OBJ = DATA_OBJ
         self.Window = Window
+        self.Gui_Forms = Gui_Forms()
         # self.Api_Gui = Context_new_obj(self.Window)
         self.Color = [34, 34, 34]
         self.Color_inspector = [80, 80, 80]
@@ -495,6 +467,9 @@ class List_OBJS:
         self.text_surface_triangle = self.font.render('Triangle', True, (255, 255, 255))
         self.text_creating_sceen = self.font.render('Create a Main Sceen',True,(255,255,255))
         self.text_surface_Camera = self.font.render('Camera', True, (255, 255, 255))
+        self.visibility = self.font2.render('Visibility',True,(255,255,255))
+        self.visible_text = self.font2.render('Visible',True, (200,200,200))
+        self.transformer_text = self.font2.render('Transform',True,(255,255,255))
         self.addOBJ_img = pygame.image.load('./Assents/plus.png')
         self.view_img = pygame.image.load('./Assents/view.png')
         self.hiden = pygame.image.load('./Assents/hidden.png')
@@ -546,6 +521,7 @@ class List_OBJS:
         self.obj_select_rect = 0
         self.obj_select_visible = False
         self.obj_select = 'Nenhum'
+        self.controler_clicker = False
         self.update_size_positions()
 
     def update_size_positions(self):
@@ -733,9 +709,23 @@ class List_OBJS:
             
                 y_position += self.cube.get_height() + 10    
     
+    def render_visibility(self): 
+        self.Gui_Forms.draw_Form1(self.Window,(100,100,100),2.5,self.DATA_OBJ.Vec[0] + 6,self.DATA_OBJ.Vec[1] + 120 + self.DATA_OBJ.ajuste1,self.DATA_OBJ.state_2_)
+        self.Window.blit(self.visibility,(self.DATA_OBJ.Vec[0] + self.visibility.get_width() / 2,self.DATA_OBJ.Vec[1] + 121 - self.visibility.get_height() / 2 - 1 + self.DATA_OBJ.ajuste1))
+
+        if self.DATA_OBJ.state_2_: 
+            self.Window.blit(self.visible_text,(self.DATA_OBJ.Vec[0] + self.transformer_text.get_width() / 2,self.DATA_OBJ.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.DATA_OBJ.ajuste1 + self.visible_text.get_height()))
+            pygame.draw.rect(self.Window, (10,10,10), (self.DATA_OBJ.state_rect),border_radius=10)
+
+            if self.config_project.get_visible_obj(self.obj_id_select): 
+                self.Window.blit(self.view_img,(self.DATA_OBJ.VecX_vector_transformer[0],self.DATA_OBJ.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.DATA_OBJ.ajuste1 + self.visible_text.get_height()))
+            else: 
+                self.Window.blit(self.hiden, (self.DATA_OBJ.VecX_vector_transformer[0],self.DATA_OBJ.Vec[1] + 130 - self.visibility.get_height() / 2 - 1 + self.DATA_OBJ.ajuste1 + self.visible_text.get_height()))
+
     def PPD(self): 
         if self.PPD_visible:
             self.DATA_OBJ.render_propieties(self.obj_type_select,self.obj_id_select,self.obj_size_select,self.obj_position_select,self.obj_angle_select)
+            self.render_visibility()
             self.DATA_OBJ.render_input(self.obj_name_select,self.obj_id_select)
         else:
             self.DATA_OBJ.render_not_prop()
@@ -868,6 +858,17 @@ class List_OBJS:
             else:
                 self.clicked2 = False
             
+            if self.DATA_OBJ.state_2_: 
+                if mouse_press[0]:
+                    if not self.controler_clicker: 
+                        if self.DATA_OBJ.state_rect.collidepoint(mouse):
+                            self.config_project.change_visible_obj(self.obj_id_select)
+                            self.Assents_gui.addMensageBank('Kairos','Alterar Visibilidade')
+ 
+                        self.controler_clicker = True
+                else:
+                    self.controler_clicker = False
+            
             if mouse_press[0]:
                 if not self.clicked:
                     if view_rect.collidepoint(mouse):
@@ -913,7 +914,7 @@ class List_OBJS:
                     x = self.rect_obj_select[0] + self.Size[0] - 5 -self.view_img.get_width() * 4
                     y = self.rect_obj_select[1] + self.cube.get_height() / 2 - 2
                     self.Window.blit(self.lixeira,(x + self.lixeira.get_width() + 10,y))
-                    if  self.obj_visible_select:
+                    if  self.config_project.get_visible_obj(self.obj_id_select):
                         self.Window.blit(self.view_img,(x,y))
                     else: 
                         self.Window.blit(self.hiden,(x,y))

@@ -15,6 +15,6 @@ uma grande flexibilidade voçe mesmo é capaz de escrever o seu com qualquer lin
 versoes: 
 
 Kairos v0.0.1 Alpha
-Console v0.0.1 Stable
+Console v0.0.3 Stable
 Compilador_C v0.0.0 Alpha
 Compilador_Engine v0.0.1 Beta

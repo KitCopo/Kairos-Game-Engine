@@ -9,7 +9,7 @@ Types = [
 
 # Version atual da Enine 
  
-VERSION_ENGINE = 'v0.0.0 Alpha.official'
-VERSION_CONSOLE = 'v0.0.2 Stable'
+VERSION_ENGINE = 'v0.0.1 Alpha.official'
+VERSION_CONSOLE = 'v0.0.3 Stable'
 VERSION_OPENGL_C_COMPILER = 'v0.0.0 Alpha'
 VERSION_PYGAME_PY_COMPILER = 'v0.0.1 Beta'

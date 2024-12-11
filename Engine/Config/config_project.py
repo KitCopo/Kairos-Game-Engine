@@ -53,7 +53,13 @@ class ProjectConfig:
                 obj['visible_in_sceen'] = not obj.get('visible_in_sceen', False)
         
         self.save_config()
-        
+    
+    def get_visible_obj(self,obj_id): 
+        objects = self.config_data.get('objects', [])
+        for obj in objects:
+            if obj.get('indece') == obj_id:
+                return obj.get('visible_in_sceen')
+    
     def delete_object(self, obj_id):
         objects = self.config_data.get('objects', [])
         new_objects = [obj for obj in objects if obj.get('indece') != obj_id]
